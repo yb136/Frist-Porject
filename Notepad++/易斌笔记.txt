@@ -1,0 +1,42 @@
+
+获取资源文件(2018.9.3)
+
+Class.getResourceAsStream()与ClassLoader.getResourceAsStream()的区别
+
+Class.getResourceAsStream() 会指定要加载的资源路径与当前类所在包的路径一致。
+
+     例如你写了一个MyTest类在包com.test.mycode 下，那么MyTest.class.getResourceAsStream("name") 会在com.test.mycode包下查找相应的资源。
+
+     如果这个name是以 '/' 开头的，那么就会从classpath的根路径下开始查找。
+
+  
+ClassLoader.getResourceAsStream()  无论要查找的资源前面是否带'/' 都会从classpath的根路径下查找。
+
+    所以: MyTest.getClassLoader().getResourceAsStream("name") 和
+
+          MyTest.getClassLoader().getResourceAsStream("name") 的效果是一样的。
+ 
+ 
+1.Class.getResourceAsStream(String path) ：
+
+path 不以'/'开头时默认是从此类所在的包下取资源，以'/'开头则是从ClassPath(Src根目录)根下获取。
+
+其只是通过path构造一个绝对路径，最终还是由ClassLoader获取资源。
+ 
+2. Class.getClassLoader.getResourceAsStream(String path) ：
+
+默认则是从ClassPath根下获取，path不能以'/'开头，最终是由ClassLoader获取资源。
+ 
+3. ServletContext. getResourceAsStream(String path)：
+默认从WebAPP根目录下取资源，Tomcat下path是否以’/'开头无所谓，当然这和具体的容器实现有关。
+ 
+如果是在SRC 下，可以用第一种方式，如果是在WEB环境下,用/WEB-INF/classes/xxx.file 应该是可以的，但是这个我没有试过。
+ 
+补充：
+JAVA中类的加载器：
+
+一共有三种加载器
+
+bootstrap classloader ：负责加载JAVA核心类( jre 下lib和class目录中的内容)
+extension classloader ：负责加载JAVA扩展类(jre 下lib/ext 目录中的内容)
+system classloader ：负责加载应用指定的类 (环境变量classpath中配置的内容)
